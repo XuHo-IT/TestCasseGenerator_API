@@ -12,19 +12,20 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost",
-        p => p.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy("AllowAll",
+        p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 var app = builder.Build();
-app.UseCors("AllowLocalhost");
+app.UseCors("AllowAll");
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TestCase Generator API v1");
+    c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+});
 
 app.UseHttpsRedirection();
 
@@ -37,5 +38,8 @@ app.UseDefaultFiles();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Add default route for root access
+app.MapGet("/", () => "TestCase Generator API is running! Visit /swagger for API documentation.");
 
 app.Run();
