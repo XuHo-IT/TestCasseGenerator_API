@@ -1,0 +1,46 @@
+1.Analyze GenerateUseCaseReportAsync() / ExportUseCaseReportToExcel() function and class required and identify all functions that need unit testing:
+
+[PASTE CODE HERE]
+
+For each function, identify:
+1. Main functionality
+2. Input parameters and types
+3. Expected return values
+4. Potential edge cases
+5. Dependencies that need mocking
+
+2.Generate comprehensive unit test cases for this funtion
+GenerateUseCaseReportAsync() / ExportUseCaseReportToExcel()
+Include:
+- Happy path scenarios
+- Edge cases (boundary values)
+- Error scenarios
+- Integration with cart state
+
+3.You are a C# Unit Testing Expert using xUnit, Moq, and FluentAssertions.
+I have a GeminiService.cs class that needs better unit testing. I also have an existing test file, GeminiServiceUseCaseReportTests.cs, but it has two major problems:
+It only tests the GenerateUseCaseReportAsync method and the constructor. It completely misses GenerateTestCasesAsync and GenerateUseCaseTableAsync.
+The existing tests for GenerateUseCaseReportAsync are flawed. They use new HttpClient() and just Assert.ThrowsAsync<Exception>. This doesn't actually test the method's logic (like success, API failure, or parsing).
+Your task is to generate a new, complete test file named GeminiServiceTests.cs that fixes these problems and provides comprehensive coverage.
+Requirements:
+Mock HttpClient: You MUST NOT use new HttpClient(). You must mock the HttpClient's behavior by using a Mock<HttpMessageHandler>. This is critical for simulating API responses.
+Cover All Public Methods: Write tests for GenerateTestCasesAsync, GenerateUseCaseTableAsync, and fix the tests for GenerateUseCaseReportAsync.
+Use IConfiguration Mock: Continue using Mock<IConfiguration> as shown in the existing tests.
+Test Scenarios: For each of the three Generate...Async methods, you must generate tests for the following scenarios:
+Success (200 OK):
+Simulate a HttpStatusCode.OK response with a valid, well-formed JSON payload (based on the GeminiApiResponse structure).
+Assert that the method returns the correctly parsed object (UseCaseReport or GeminiTestCaseResponse).
+Assert that Success is true for GeminiTestCaseResponse.
+API Failure (e.g., 400 Bad Request):
+Simulate a HttpStatusCode.BadRequest or HttpStatusCode.InternalServerError response.
+Assert that the method throws an Exception containing the error message from the API.
+Malformed JSON Response:
+Simulate a HttpStatusCode.OK response but with invalid JSON (e.g., "{"bad": "json"").
+Assert that the method throws an Exception (from the Parse... methods) indicating a parsing error.
+Empty Candidates Response:
+For GenerateTestCasesAsync and GenerateUseCaseTableAsync, simulate a HttpStatusCode.OK response with valid JSON but an empty candidates array.
+Assert that the method returns a GeminiTestCaseResponse where Success is false and a proper Message is set.
+Input Validation: The current GeminiService code does not have explicit null/empty checks for the string inputs in its public methods. Create tests that check for ArgumentNullException or ArgumentException for userRequirement and useCaseName. (This will require adding the validation to the GeminiService implementation, but you should write the tests as if it exists).
+
+4. Give me cmd to test with specific one and development cmd. Beside that adding the debugging cmd to catch up with the testing
+5.(Input the error terminal), help me define error and code for each specific failed testcase and give me a modify way to update the test case to achieve better result 

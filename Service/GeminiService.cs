@@ -11,12 +11,29 @@ namespace TestcaseGenerator.Service
         private readonly string _apiKey;
         private readonly string _baseUrl;
 
+        // before modification - pass 16, fail 16
+        //public GeminiService(HttpClient httpClient, IConfiguration configuration)
+        //{
+        //    _httpClient = httpClient;
+        //    _configuration = configuration;
+        //    _apiKey = _configuration["GeminiApi:ApiKey"] ?? throw new InvalidOperationException("Gemini API key not configured");
+        //    _baseUrl = _configuration["GeminiApi:BaseUrl"] ?? "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent";
+        //}
+
+        // after modification - pass 19, fail 13
         public GeminiService(HttpClient httpClient, IConfiguration configuration)
         {
-            _httpClient = httpClient;
-            _configuration = configuration;
-            _apiKey = _configuration["GeminiApi:ApiKey"] ?? throw new InvalidOperationException("Gemini API key not configured");
-            _baseUrl = _configuration["GeminiApi:BaseUrl"] ?? "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent";
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+            var apiKey = _configuration["GeminiApi:ApiKey"];
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                throw new InvalidOperationException("Gemini API key not configured");
+            }
+            _apiKey = apiKey;
+
+            _baseUrl = _configuration["GeminiApi:BaseUrl"] ?? "...";
         }
 
 
